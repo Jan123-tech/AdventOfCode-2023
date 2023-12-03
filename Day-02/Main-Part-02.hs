@@ -14,7 +14,7 @@ main = do
     let games3 = map (concatMap (map ((\x -> (read $ head x :: Int, head $ x!!1)) . splitOn " "))) games2
     let games4 = map (groupBy (\a b -> snd a == snd b) . sortBy (compare `on` snd)) games3
     let getMax x = maximum $ map fst x
-    let games5 = map (\x -> [getMax $ head x, getMax $ x!!1, getMax $ last x]) games4
+    let games5 = map (\x -> [getMax $ head x, getMax $ x!!1, getMax $ x!!2]) games4
     let games6 = map product games5
     let total = sum games6
     print total
