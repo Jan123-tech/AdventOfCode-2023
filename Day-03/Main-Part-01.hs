@@ -52,6 +52,6 @@ getNumbers (rowIndex, row) = do
 
 getSymbols :: (Int, String) -> [((Int, Int), Char)]
 getSymbols (rowIndex, row) = do
-    let line1WithIndex = zip [0..] row :: [(Int, Char)]
-    let symbols = map (\(i, x) -> ((rowIndex, i), x)) $ filter (\(_, x) -> not $ isDigit x || x == '.') line1WithIndex
+    let lineWithIndex = zip [0..] row :: [(Int, Char)]
+    let symbols = map (\(i, x) -> ((rowIndex, i), x)) $ filter (\(_, x) -> not $ isDigit x || x == '.') lineWithIndex
     symbols
