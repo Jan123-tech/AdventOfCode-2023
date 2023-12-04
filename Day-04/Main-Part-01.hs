@@ -1,4 +1,3 @@
-{-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use tuple-section" #-}
 
@@ -20,13 +19,13 @@ main = do
     let items5 = map (map ( filter (/= "") . splitOn " ")) items4
     let items6 = map (map (map (\x -> (read x :: Int)))) items5
     let items7 = zip [0..] items6
-    let items8 = map (\x -> (map (\y -> (fst x, y)) . head $ snd x, (map (\y -> (fst x, y)) . last $ snd x))) items7
-    let items9 = concatMap (\x -> fst x) items8 :: [(Int, Int)]
+    let items8 = map (\x -> (map (\y -> (fst x, y)) . head $ snd x, map (\y -> (fst x, y)) . last $ snd x)) items7
+    let items9 = concatMap fst items8 :: [(Int, Int)]
 
     let mp = HashSet.fromList items9
-    let itemsToMatch = map (\x -> snd x) items8
-    let matchCounts = map (\x -> length $ filter (\y -> HashSet.member y mp) x) $ itemsToMatch
-    let scores = map (score) matchCounts
+    let itemsToMatch = map snd items8
+    let matchCounts = map (length . filter (`HashSet.member` mp)) itemsToMatch
+    let scores = map score matchCounts
     let total = sum scores
 
     print total
