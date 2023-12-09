@@ -13,6 +13,11 @@ main = do
 
     let items = lines contents
 
+    let s0 = [77241539 :: Integer, 154483078..]
+    let s1 = head $ filter (\x -> x `mod` 49803847 == 0) s0
+
+    print s1
+
     let instructions = head items
 
     let nodes0 = drop 2 items
