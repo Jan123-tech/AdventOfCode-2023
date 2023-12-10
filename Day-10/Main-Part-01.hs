@@ -26,7 +26,9 @@ main = do
     let visited2 = path pointsMap [(0, startNew)] (Map.empty :: Map Point Int)
     let maxCount = maximum $ snd visited2
 
-    mapM_ print $ fst visited2
+    let mp = [[ let p = Point { x_p=x, y_p=y } in if Map.member p $ snd visited2  then c $ pointsMap ! p else '0' | x <- [0,1..139]] | y <- [0,1..139]]
+
+    mapM_ print mp
 
     print maxCount
 
