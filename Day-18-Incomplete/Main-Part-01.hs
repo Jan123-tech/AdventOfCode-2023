@@ -19,10 +19,12 @@ main = do
     let points_map = Map.fromList $ map (\x -> (x, True)) points
 
     let points_list = Map.toList points_map
-    let min_x = minimum $ map (\x -> x_p $ fst x) points_list
-    let max_x = maximum $ map (\x -> x_p $ fst x) points_list
-    let min_y = minimum $ map (\x -> y_p $ fst x) points_list
-    let max_y = maximum $ map (\x -> y_p $ fst x) points_list
+    let x_points = map (\x -> x_p $ fst x) points_list
+    let y_points = map (\x -> y_p $ fst x) points_list
+    let min_x = minimum $ x_points
+    let max_x = maximum $ x_points
+    let min_y = minimum $ y_points
+    let max_y = maximum $ y_points
 
     let rows = [ [let p = Point { x_p=x, y_p=y } in if Map.member p points_map then '#' else '.' | x <- [min_x,min_x+1..max_x]] | y <- [min_y,min_y+1..max_y]]
 
