@@ -2,9 +2,7 @@ module Main (main) where
 import qualified Data.Map as Map
 import Data.Map (Map)
 import qualified Data.Bifunctor
-import Data.List (nub)
-import Data.List.Split (splitOn)
-import Data.Map ((!), empty)
+import Data.Map ((!))
 
 main :: IO ()
 main = do
@@ -27,26 +25,25 @@ main = do
     let rocks_map = Map.fromList $ map (\x -> (fst x, x)) $ filter (\x -> '#' == snd x) items2
     let points_map = Map.fromList $ map (\x -> (fst x, x)) items2
 
-    let prevPoint = Point { x_p=1, y_p=(-1) }
     let startPoint = Point { x_p=1, y_p=0 }
     let endPoint = Point { x_p=max_x-1, y_p=max_y }
-    let paths = getPoints endPoint startPoint prevPoint points_map Map.empty []
+    let paths = getPoints endPoint startPoint points_map Map.empty []
     let pathPoints = Map.fromList $ map (\x -> (x, True)) $ concatMap (\x -> x) paths
 
     let rows = [ [let p = Point { x_p=x, y_p=y } in if Map.member p pathPoints then 'O' else if Map.member p rocks_map then '#' else if Map.member p slope_map then snd $ slope_map ! p else '.' | x <- x_all] | y <- y_all]
     mapM_ print rows
 
-    print 'v'
+    print $ maximum $ map (\x -> length x) paths
 
-getPoints :: Point -> Point -> Point ->  Map Point (Point, Char) -> Map Point Bool -> [Point] -> [Point]
-getPoints endPoint point previousPoint squaresMap visited paths
-    | point == endPoint || null newPoints = paths
+getPoints :: Point -> Point ->  Map Point (Point, Char) -> Map Point Bool -> [Point] -> [[Point]]
+getPoints endPoint point squaresMap visited path
+    | point == endPoint || null newPoints = [path]
     | otherwise = do
         let newVisited = foldl (\acc x -> Map.insert x True acc) visited newPoints
-        foldl (\acc x -> getPoints endPoint x point squaresMap newVisited acc) newPoints visited
+        concatMap (\x -> getPoints endPoint x squaresMap newVisited ([x] ++ path)) newPoints
             where
                 newPointsSource = map (\(x, y) -> Point { x_p=x_p point + x, y_p=y_p point + y }) [(1,0),(-1,0),(0,-1),(0,1)];
-                newPoints = filter (\x -> Map.notMember x visited && canEnter (snd $ squaresMap ! x) previousPoint x) newPointsSource;
+                newPoints = filter (\x -> Map.notMember x visited && (if Map.member x squaresMap then canEnter (snd $ squaresMap ! x) point x else False)) newPointsSource;
 
 data Point = Point { x_p :: Int, y_p :: Int } deriving (Show, Ord)
 
