@@ -3,6 +3,7 @@ import qualified Data.Map as Map
 import Data.Map (Map)
 import qualified Data.Bifunctor
 import Data.Map ((!))
+import Data.List (sortOn)
 
 main :: IO ()
 main = do
@@ -28,7 +29,9 @@ main = do
     let startPoint = Point { x_p=1, y_p=0 }
     let endPoint = Point { x_p=max_x-1, y_p=max_y }
     let paths = getPoints endPoint startPoint points_map Map.empty []
-    let pathPoints = Map.fromList $ map (\x -> (x, True)) $ concatMap (\x -> x) paths
+    let pathLengths0 = map (\x -> (x, length x)) $ filter (\x -> head x == endPoint) paths
+    let pathLengths1 = fst $ last $ sortOn snd pathLengths0
+    let pathPoints = Map.fromList $ map (\x -> (x, True)) pathLengths1
 
     let rows = [ [let p = Point { x_p=x, y_p=y } in if Map.member p pathPoints then 'O' else if Map.member p rocks_map then '#' else if Map.member p slope_map then snd $ slope_map ! p else '.' | x <- x_all] | y <- y_all]
     mapM_ print rows
